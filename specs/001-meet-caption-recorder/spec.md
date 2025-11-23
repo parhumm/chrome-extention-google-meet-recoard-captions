@@ -5,6 +5,16 @@
 **Status**: Draft
 **Input**: User description: "Define a Chrome extension for Google Meet that, while captions are enabled, captures each speaker's lines in order and, when stopped, downloads a Markdown file with meeting title, local date, duration, and transcript grouped by speaker. Everything must stay local (no cloud, no accounts). easy-to-easy, easy-to-implemnt. not complicated."
 
+## Clarifications
+
+### Session 2025-11-23
+
+- Q: What filename format should be used for transcript files to ensure uniqueness while remaining human-readable? → A: Use format `GoogleMeet_[MeetingTitle]_[Date]_[StartTime].md` (e.g., `GoogleMeet_Team_Sync_2025-11-23_14-30.md`) with sanitized meeting title (special characters removed)
+- Q: What happens when the user leaves the Google Meet page while recording is active? → A: Recording stops immediately and triggers a final save with all captured captions up to that point - user can resume in new meeting if needed
+- Q: What should be used as the meeting title when page title extraction fails or is unavailable? → A: Use Google Meet URL code as fallback title (e.g., "abc-defg-hij")
+- Q: How should the system handle file download failures or permission issues during auto-save? → A: Continue recording and retry on next 30-second interval; show non-blocking notification to user about save failure; data remains in memory until user manually stops
+- Q: What happens if captions are disabled mid-recording? → A: Pause recording and trigger auto-save with captured content so far; show notification prompting user to re-enable captions; resume capturing if captions are re-enabled
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Start Recording and Auto-Save Transcript (Priority: P1)
@@ -59,15 +69,15 @@ A user tries to start recording but captions are not enabled in the Google Meet 
 
 ### Edge Cases
 
-- What happens when the user leaves the Google Meet page while recording is active?
+- **User navigates away from Google Meet page during recording**: Recording stops immediately and triggers a final save with all captured captions up to that point
+- **File download failures or permission issues during auto-save**: Continue recording, retry on next 30-second interval, show non-blocking notification about failure, keep data in memory until manual stop
+- **Captions disabled mid-recording**: Pause recording and trigger auto-save with captured content; show notification prompting user to re-enable captions; resume capturing when captions are re-enabled
 - How does the system handle extremely long meetings (e.g., 4+ hours)?
-- What happens if captions are disabled mid-recording?
 - How does the extension behave if multiple Google Meet tabs are open?
 - What happens if the speaker name is not detected (shows as "Unknown" in captions)?
 - How does the system handle special characters or emojis in captions?
 - What happens if the user closes the browser tab during recording?
 - What happens if the user stops recording before the first 30-second auto-save occurs?
-- How does the system handle file download failures or permission issues during auto-save?
 - What happens if new captions arrive during the auto-save process?
 
 ## Requirements *(mandatory)*
@@ -78,7 +88,7 @@ A user tries to start recording but captions are not enabled in the Google Meet 
 - **FR-002**: System MUST record the speaker name associated with each caption line
 - **FR-003**: System MUST maintain chronological order of all captured captions
 - **FR-004**: System MUST track recording start time and end time to calculate total duration
-- **FR-005**: System MUST extract or allow user to specify meeting title
+- **FR-005**: System MUST extract meeting title from Google Meet page; if unavailable, use the Google Meet URL code as fallback title
 - **FR-006**: System MUST generate a Markdown file containing meeting metadata (title, date, duration) and full transcript
 - **FR-007**: System MUST group consecutive captions from the same speaker together in the transcript output
 - **FR-008**: System MUST automatically download or update the transcript file every 30 seconds while recording is active
@@ -87,14 +97,19 @@ A user tries to start recording but captions are not enabled in the Google Meet 
 - **FR-011**: System MUST provide start and stop recording controls accessible from the extension UI
 - **FR-012**: System MUST indicate current recording status to the user
 - **FR-013**: System MUST work only when Google Meet captions are enabled
-- **FR-014**: System MUST use consistent filename for auto-save updates to avoid creating multiple files for the same meeting
+- **FR-014**: System MUST use consistent filename format `GoogleMeet_[MeetingTitle]_[Date]_[StartTime].md` for auto-save updates, sanitizing meeting title to remove special characters, to avoid creating multiple files for the same meeting
 - **FR-015**: System MUST clear recording data after user stops recording and final transcript is saved to avoid memory buildup
+- **FR-016**: System MUST detect when user navigates away from Google Meet page during active recording, immediately stop recording, and trigger final save of all captured captions
+- **FR-017**: System MUST continue recording if auto-save fails, retry save on next 30-second interval, and display non-blocking notification to user about the failure
+- **FR-018**: System MUST retain all captured caption data in memory during save failures until user manually stops recording
+- **FR-019**: System MUST detect when captions are disabled during active recording, pause recording, trigger auto-save with all captured content, and display notification prompting user to re-enable captions
+- **FR-020**: System MUST automatically resume caption capture when captions are re-enabled after being paused, maintaining the same recording session and filename
 
 ### Key Entities
 
 - **Caption Entry**: Represents a single caption line with speaker name, text content, and timestamp
-- **Recording Session**: Represents one complete recording with start time, end time, meeting title, and collection of caption entries
-- **Transcript Output**: Represents the formatted Markdown document with metadata header and speaker-grouped transcript
+- **Recording Session**: Represents one complete recording with start time, end time, meeting title (extracted from page or URL code fallback), and collection of caption entries
+- **Transcript Output**: Represents the formatted Markdown document with metadata header and speaker-grouped transcript, saved with filename format `GoogleMeet_[MeetingTitle]_[Date]_[StartTime].md`
 
 ## Success Criteria *(mandatory)*
 
