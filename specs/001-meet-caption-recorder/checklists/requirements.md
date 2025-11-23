@@ -33,25 +33,27 @@
 
 ### Content Quality Analysis
 - ✅ Spec is written in business language without technical implementation details
-- ✅ Focus is on user needs (recording captions, downloading transcripts)
+- ✅ Focus is on user needs (recording captions, auto-saving transcripts every 30 seconds)
 - ✅ All mandatory sections present: User Scenarios & Testing, Requirements, Success Criteria
 
 ### Requirement Completeness Analysis
 - ✅ No [NEEDS CLARIFICATION] markers present - all requirements are clear
-- ✅ All requirements are testable (e.g., "MUST capture caption text", "MUST maintain chronological order")
-- ✅ Success criteria are measurable (e.g., "within 2 clicks", "within 2 seconds", "100% chronological accuracy")
+- ✅ All requirements are testable (e.g., "MUST capture caption text", "MUST automatically download every 30 seconds")
+- ✅ Success criteria are measurable (e.g., "within 2 clicks", "every 30 seconds ±5 seconds", "100% chronological accuracy")
 - ✅ Success criteria avoid implementation details and focus on user outcomes
 - ✅ User stories include comprehensive acceptance scenarios with Given-When-Then format
-- ✅ Edge cases identified (7 scenarios covering tab navigation, long meetings, caption state changes)
-- ✅ Scope is bounded: local-only, no authentication, captions-only, Markdown output
+- ✅ Edge cases identified (10 scenarios covering tab navigation, long meetings, caption state changes, auto-save timing and failures)
+- ✅ Scope is bounded: local-only, no authentication, captions-only, Markdown output with 30-second auto-save
 - ✅ Dependencies implicit (requires Google Meet captions to be enabled)
 
 ### Feature Readiness Analysis
-- ✅ Each functional requirement (FR-001 through FR-013) is actionable and clear
-- ✅ Three user stories cover: core functionality (P1), status feedback (P2), error handling (P3)
+- ✅ Each functional requirement (FR-001 through FR-015) is actionable and clear
+- ✅ Three user stories cover: core functionality with auto-save (P1), status feedback (P2), error handling (P3)
 - ✅ Success criteria align with user stories and requirements
 - ✅ No technical terms or implementation leakage detected
 
 ## Notes
 
-All checklist items pass. The specification is complete, unambiguous, and ready for planning phase. No updates required.
+**Updated**: 2025-11-23 - Revised to include 30-second auto-save functionality instead of single download on stop.
+
+All checklist items pass. The specification is complete, unambiguous, and ready for planning phase. The auto-save feature adds data safety without complicating the user experience.
