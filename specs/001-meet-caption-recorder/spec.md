@@ -14,6 +14,9 @@
 - Q: What should be used as the meeting title when page title extraction fails or is unavailable? → A: Use Google Meet URL code as fallback title (e.g., "abc-defg-hij")
 - Q: How should the system handle file download failures or permission issues during auto-save? → A: Continue recording and retry on next 30-second interval; show non-blocking notification to user about save failure; data remains in memory until user manually stops
 - Q: What happens if captions are disabled mid-recording? → A: Pause recording and trigger auto-save with captured content so far; show notification prompting user to re-enable captions; resume capturing if captions are re-enabled
+- Q: How should unknown speaker names be handled in the transcript? → A: Pass through Google Meet's label as-is (e.g., "Unknown") and add numbering for distinct unknown speakers (e.g., "Unknown Speaker 1", "Unknown Speaker 2") in order of appearance
+- Q: How should special characters and emojis in captions be handled? → A: Preserve all special characters and emojis as-is in transcript content (Markdown supports Unicode); only sanitize for filename generation (already specified in FR-014)
+- Q: What happens if user stops recording before the first 30-second auto-save occurs? → A: Trigger immediate save with all captured captions - treat same as normal stop per FR-009
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -72,12 +75,12 @@ A user tries to start recording but captions are not enabled in the Google Meet 
 - **User navigates away from Google Meet page during recording**: Recording stops immediately and triggers a final save with all captured captions up to that point
 - **File download failures or permission issues during auto-save**: Continue recording, retry on next 30-second interval, show non-blocking notification about failure, keep data in memory until manual stop
 - **Captions disabled mid-recording**: Pause recording and trigger auto-save with captured content; show notification prompting user to re-enable captions; resume capturing when captions are re-enabled
+- **Speaker name not detected or shows as "Unknown"**: Pass through Google Meet's label and add numbering for distinct unknown speakers (e.g., "Unknown Speaker 1", "Unknown Speaker 2") in order of appearance
+- **Special characters or emojis in captions**: Preserve as-is in transcript content (Markdown natively supports Unicode); sanitization only applies to filename generation per FR-014
+- **User stops recording before first 30-second auto-save**: Trigger immediate save with all captured captions - treat same as normal stop per FR-009
 - How does the system handle extremely long meetings (e.g., 4+ hours)?
 - How does the extension behave if multiple Google Meet tabs are open?
-- What happens if the speaker name is not detected (shows as "Unknown" in captions)?
-- How does the system handle special characters or emojis in captions?
 - What happens if the user closes the browser tab during recording?
-- What happens if the user stops recording before the first 30-second auto-save occurs?
 - What happens if new captions arrive during the auto-save process?
 
 ## Requirements *(mandatory)*
@@ -92,7 +95,7 @@ A user tries to start recording but captions are not enabled in the Google Meet 
 - **FR-006**: System MUST generate a Markdown file containing meeting metadata (title, date, duration) and full transcript
 - **FR-007**: System MUST group consecutive captions from the same speaker together in the transcript output
 - **FR-008**: System MUST automatically download or update the transcript file every 30 seconds while recording is active
-- **FR-009**: System MUST automatically trigger a final transcript file download when user stops recording
+- **FR-009**: System MUST automatically trigger a final transcript file download when user stops recording, regardless of whether any auto-saves have occurred
 - **FR-010**: System MUST store all data locally in browser memory (no external services, databases, or cloud storage)
 - **FR-011**: System MUST provide start and stop recording controls accessible from the extension UI
 - **FR-012**: System MUST indicate current recording status to the user
@@ -104,6 +107,8 @@ A user tries to start recording but captions are not enabled in the Google Meet 
 - **FR-018**: System MUST retain all captured caption data in memory during save failures until user manually stops recording
 - **FR-019**: System MUST detect when captions are disabled during active recording, pause recording, trigger auto-save with all captured content, and display notification prompting user to re-enable captions
 - **FR-020**: System MUST automatically resume caption capture when captions are re-enabled after being paused, maintaining the same recording session and filename
+- **FR-021**: System MUST handle unknown or undetected speaker names by preserving Google Meet's label and adding sequential numbering for distinct unknown speakers in order of appearance (e.g., "Unknown Speaker 1", "Unknown Speaker 2")
+- **FR-022**: System MUST preserve all special characters and emojis in caption text as-is in the transcript content (Markdown supports Unicode natively)
 
 ### Key Entities
 
