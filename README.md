@@ -29,7 +29,41 @@ This extension allows users to capture and save captions/subtitles during Google
 
 ## Development
 
-This is currently under development.
+This project uses [Spec-Kit](https://github.com/github/spec-kit/) for spec-driven development.
+
+### Development Workflow
+
+This project follows a spec-driven development approach using slash commands:
+
+#### Core Workflow (use in order):
+
+1. `/speckit.constitution` - Establish project principles and development guidelines
+2. `/speckit.specify` - Create detailed feature specifications
+3. `/speckit.plan` - Create technical implementation plans
+4. `/speckit.tasks` - Generate actionable task breakdowns
+5. `/speckit.implement` - Execute the full feature build
+
+#### Enhancement Commands (optional):
+
+- `/speckit.clarify` - Ask structured questions to de-risk ambiguous areas (use before planning)
+- `/speckit.analyze` - Check cross-artifact consistency and alignment (use after tasks, before implementation)
+- `/speckit.checklist` - Generate quality checklists to validate requirements
+- `/speckit.taskstoissues` - Convert tasks to GitHub issues
+
+### Setup Spec-Kit
+
+If you need to set up spec-kit:
+
+```bash
+# Install spec-kit
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+
+# Initialize in project (already done for this project)
+specify init --here --ai claude --force
+
+# Verify installation
+specify check
+```
 
 ## License
 
